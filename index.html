@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+<style type="text/css">
+	html { font-family: "Courier New", Courier, Monaco, monospace; height: 100% }
+	body { height: 100%; margin: 0; padding: 0; font-size: 0.8em; }
+	#map_canvas { color: #ff4fcc; width: 100%; height: 100% }
+	h4 { padding: 0px; margin: 5px; font-weight: normal; float: left;}
+	#status { float: right; }
+	#cycling { font-weight: bold; text-decoration: blink; }
+</style>
+<script type="text/javascript"
+src="http://maps.googleapis.com/maps/api/js?key=AIzaSyDGyFyUAvMwNQ2e3zXni-MF0dAl1QHvuGA&sensor=false">
+</script>
+</head>
+
+<body>
+<h4 id="lastupdate"></h4>
+
+<div id="map_canvas" ></div>
+
+   <script type="text/javascript">
+    
+			var xhreq = function (url,callback) {
+				var req = createXMLHTTPObject();
+				if (!req) return;
+				
+				
+				req.open("GET", url, true);
+				
+				//set callback
+				req.onreadystatechange = function () {
+					if (req.readyState != 4) return;
+					if (req.status != 200 && req.status != 304) {
+						return;
+					}
+					callback(req);
+				}
+				if (req.readyState == 4) return;
+				req.send(null);
+			}	
+			
+			var XMLHttpFactories = [
+				function () {return new XMLHttpRequest()},
+				function () {return new ActiveXObject("Msxml2.XMLHTTP")},
+				function () {return new ActiveXObject("Msxml3.XMLHTTP")},
+				function () {return new ActiveXObject("Microsoft.XMLHTTP")}
+			];
+			
+			var createXMLHTTPObject = function () {
+				var xmlhttp = false;
+				for (var i=0; i < XMLHttpFactories.length; i++) {
+					try {
+						xmlhttp = XMLHttpFactories[i]();
+					}
+					catch (e) {
+						continue;
+					}
+					break;
+				}
+				return xmlhttp;
+			}
+    
+    var parseJSON = function (text) {
+			if(JSON) {
+				return JSON.parse(text);
+			}
+			return eval("(" + text + ")");
+		}
+  
+var map, marker;
+
+      function fetchdata() {
+
+xhreq("./locations.json", function(req) { 
+      	
+      		var data = parseJSON(req.responseText);
+      	      		
+      		var coordinates = [];
+      		
+      		for (d in data) {
+      			coordinates.push(new google.maps.LatLng(data[d].latt, data[d].long));
+      		}
+      		
+
+      		var path = new google.maps.Polyline({
+				    path: coordinates,
+				    strokeColor: "#ff3195", //hot pink!!!
+				    strokeOpacity: 1.0,
+				    strokeWeight: 5
+				  });
+
+var mapOptions = {
+                  center: coordinates[coordinates.length - 1],
+	          zoom: 8,
+	          mapTypeId: google.maps.MapTypeId.ROADMAP
+	        };
+	        map = new google.maps.Map(document.getElementById("map_canvas"), mapOptions);
+				  
+				  path.setMap(map);
+			          
+				  marker = new google.maps.Marker({
+			      position: coordinates[coordinates.length - 1],
+			      map: map,
+			      animation: google.maps.Animation.DROP
+				  });
+				  
+			var emarker = new google.maps.Marker({
+		position: new google.maps.LatLng(48.135281,11.56758),
+		map: map,
+		animation: google.maps.Animation.DROP,
+		title: "The final destination"
+});
+				  var date = new Date(data[data.length-1].time * 1000.0);
+				  var lastupdate = document.getElementById("lastupdate");
+					lastupdate.innerHTML = "Last update: " + date;
+      	
+      	});
+
+}
+    
+      function initialize() {
+      
+	
+      		
+      fetchdata();
+
+//      setInterval(fetchdata, 5000);	
+ 
+ 
+ 			/*	xhreq("./status", function(req){
+ 					var cycling = document.getElementById("cycling");
+					cycling.innerHTML = req.responseText;
+					var i = 0;
+					if (req.responseText === "CYCLING") {
+						cycling.style.color = "#ff3195";
+					}
+ 				});*/
+        
+      }
+      
+      initialize();
+    </script>
+
+
+
+
+</body>
+</html>
