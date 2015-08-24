@@ -26,18 +26,6 @@ $(document).ready(function(){
 
             path.setMap(map);
 
-             marker = new google.maps.Marker({
-                position: coordinates[coordinates.length - 1],
-                map: map,
-                animation: google.maps.Animation.DROP,
-                title: "this is a ttle",
-                url: "http://fezz.in",
-            });
-
-            google.maps.event.addListener(marker, 'click', function() {
-                window.location.href = this.url;
-            });
-
             // var emarker = new google.maps.Marker({
             //     position: new google.maps.LatLng(48.135281,11.56758),
             //     map: map,
@@ -48,9 +36,29 @@ $(document).ready(function(){
             var lastupdate = document.getElementById("lastupdate");
             lastupdate.innerHTML = "Last update: " + date;
 
+	    $.getJSON("tumblr-callback.php", function(data) {
+		
+		var markers = data.map(function(e) {
+		    return  new google.maps.Marker({
+			position: new google.maps.LatLng(e.lat, e.lon),
+			map: map,
+			animation: google.maps.Animation.DROP,
+			title: e.title,
+			url: e.url,
+		    });
+		});
+
+		markers.forEach(function(e) {
+		    google.maps.event.addListener(e, 'click', function() {
+			window.location.href = this.url;
+		    });
+		});
+
+	    });
+
         });
 
     })();
 
-
+    
 });

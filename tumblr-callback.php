@@ -10,7 +10,7 @@ if (isset($_GET['title'])) {
     $last_point = end(get_points());
     
     
-    $line = "$title, $url, " . $last_point['lat'] . ", " . $last_point['lon'] . "\n";
+    $line = "$title,$url," . $last_point['lat'] . ", " . $last_point['lon'] . "\n";
     
     file_put_contents($filename, $line, FILE_APPEND);
     echo("wrote $line");
