@@ -2,7 +2,7 @@
 
 include './functions.php';
 
-$data = file2data('locations.csv', array('lat', 'lon', 'time', 'hacc', 'vacc'));
+$data = get_points();
 
 if (isset($_GET['size'])) {
     echo(json_encode(array('size' => count($data))));

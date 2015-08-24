@@ -1,13 +1,15 @@
 <?php
 
-function file2data($filename, $cols) {
+function file2data($filename, $cols, $number=true) {
 
     $data = array();
     $file = fopen($filename, 'r');
     
     while (($line = fgetcsv($file)) !== FALSE) {
-        foreach($line as &$value) {
-            $value = floatval($value);
+        if ($number) {
+            foreach($line as &$value) {
+                $value = floatval($value);
+            }
         }
         $data[] = array_combine($cols, $line);
     }
@@ -16,7 +18,8 @@ function file2data($filename, $cols) {
     return $data;
 }
 
-
+function get_points() {
+    return file2data('locations.csv', array('lat', 'lon', 'time', 'hacc', 'vacc'));
 }
 
 ?>
