@@ -18,7 +18,7 @@ $(document).ready(function(){
 
             var mapOptions = {
                 center: coordinates[coordinates.length - 1],
-	            zoom: 8,
+	            zoom: 10,
 	            mapTypeId: google.maps.MapTypeId.ROADMAP
 	        };
             
@@ -29,8 +29,14 @@ $(document).ready(function(){
 		    marker = new google.maps.Marker({
 			    position: coordinates[coordinates.length - 1],
 			    map: map,
-			    animation: google.maps.Animation.DROP
+			    animation: google.maps.Animation.DROP,
+                title: "this is a ttle",
+                url: "http://fezz.in",
 		    });
+
+            google.maps.event.addListener(marker, 'click', function() {
+                window.location.href = this.url;
+            });
 		    
 		    // var emarker = new google.maps.Marker({
 		    //     position: new google.maps.LatLng(48.135281,11.56758),
