@@ -8,7 +8,7 @@ $haccuracy = $_GET['vacc'];
 
 $line = "$lat, $lon, $time, $haccuracy, $vaccuracy\n";
 
-$file = "new_locations.csv";
+$file = "locations.csv";
 
 file_put_contents($file, $line, FILE_APPEND);
 
