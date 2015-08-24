@@ -1,16 +1,8 @@
 <?php
 
-$data = array();
+include './functions.php';
 
-$file = fopen('locations.csv', 'r');
-$cols = array('lat', 'lon', 'time', 'hacc', 'vacc');
-while (($line = fgetcsv($file)) !== FALSE) {
-    foreach($line as &$value) {
-        $value = floatval($value);
-    }
-    $data[] = array_combine($cols, $line);
-}
-fclose($file);
+$data = file2data('locations.csv', array('lat', 'lon', 'time', 'hacc', 'vacc'));
 
 if (isset($_GET['size'])) {
     echo(json_encode(array('size' => count($data))));
